@@ -1,0 +1,7 @@
+{
+  "name": "Chatterbox AI Song Generator",
+  "description": "A futuristic AI song generator with a glass UI and a hands-free voice assistant named Chatterbox.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
