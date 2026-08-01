@@ -35,21 +35,24 @@ export default function Mixer({ song, onUpdateSong }: MixerProps) {
                 <Mic2 className="w-4 h-4" /> {track.name}
               </span>
               <div className="flex items-center gap-2">
-                <Volume2 className="w-4 h-4 text-gray-500" />
+                <Volume2 className="w-4 h-4 text-gray-500" aria-hidden="true" />
                 <input 
                   type="range" min="0" max="2" step="0.1" value={track.volume}
                   onChange={(e) => updateTrack(track.id, { volume: parseFloat(e.target.value) })}
-                  className="w-24 accent-green-500"
+                  aria-label={`Volume for ${track.name}`}
+                  className="w-24 accent-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400"
                 />
               </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label={`Effects for ${track.name}`}>
               {Object.entries(track.effects).map(([effect, enabled]) => (
                 <button
                   key={effect}
                   onClick={() => updateTrack(track.id, { effects: { ...track.effects, [effect]: !enabled } })}
-                  className={`text-[10px] px-2 py-1 rounded border transition-all ${enabled ? 'bg-green-500/20 border-green-500/50 text-green-300' : 'bg-white/5 border-white/10 text-gray-500'}`}
+                  aria-pressed={enabled}
+                  aria-label={`Toggle ${effect} on ${track.name}`}
+                  className={`text-[10px] px-2 py-1 rounded border transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${enabled ? 'bg-green-500/20 border-green-500/50 text-green-300' : 'bg-white/5 border-white/10 text-gray-500'}`}
                 >
                   {effect}
                 </button>

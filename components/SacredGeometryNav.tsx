@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
-import { Music, Library, Sliders, Edit3, MessageSquare, Sparkles } from 'lucide-react';
+import { Music, Library, Sliders, Edit3, MessageSquare, Sparkles, Piano } from 'lucide-react';
 
 interface NavItem {
   id: string;
@@ -19,6 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'mixer', label: 'Mixer', gematria: 108, mantra: 'RAM', icon: Sliders, color: '#00D4FF' },
   { id: 'editor', label: 'Editor', gematria: 369, mantra: 'YAM', icon: Edit3, color: '#FF00D4' },
   { id: 'assistant', label: 'Assistant', gematria: 9, mantra: 'HAM', icon: MessageSquare, color: '#FFD700' },
+  { id: 'instrument', label: 'Synthesizer', gematria: 528, mantra: 'OM', icon: Piano, color: '#9333EA' },
 ];
 
 interface SacredGeometryNavProps {
@@ -35,9 +36,9 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
   const centerY = 150;
 
   return (
-    <div className="relative w-[300px] h-[300px] flex items-center justify-center select-none">
+    <nav aria-label="Main Navigation" className="relative w-[300px] h-[300px] flex items-center justify-center select-none">
       {/* Background Sacred Geometry Pattern (Flower of Life) */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
+      <div className="absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true">
         <svg viewBox="0 0 300 300" className="w-full h-full stroke-white fill-none">
           <circle cx="150" cy="150" r="50" />
           {[0, 60, 120, 180, 240, 300].map((angle) => (
@@ -74,10 +75,22 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
           return (
             <g
               key={item.id}
-              className="cursor-pointer group"
+              className="cursor-pointer group outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80"
               onClick={() => onSectionChange(item.id)}
               onMouseEnter={() => setIsHovered(item.id)}
               onMouseLeave={() => setIsHovered(null)}
+              onFocus={() => setIsHovered(item.id)}
+              onBlur={() => setIsHovered(null)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSectionChange(item.id);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={`Navigate to ${item.label}`}
+              aria-current={isActive ? 'page' : undefined}
             >
               <motion.path
                 d={`M ${ix1} ${iy1} L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 0 0 ${ix1} ${iy1}`}
@@ -144,6 +157,6 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </nav>
   );
 }

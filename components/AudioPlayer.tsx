@@ -93,11 +93,12 @@ export default function AudioPlayer({ song }: AudioPlayerProps) {
           max={song.duration}
           value={currentTime}
           onChange={handleSeek}
-          className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-green-500"
+          aria-label="Seek time"
+          className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400"
         />
         <div className="flex justify-between text-xs text-gray-400 mt-1">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(song.duration)}</span>
+          <span aria-hidden="true">{formatTime(currentTime)}</span>
+          <span aria-hidden="true">{formatTime(song.duration)}</span>
         </div>
       </div>
 
@@ -107,22 +108,27 @@ export default function AudioPlayer({ song }: AudioPlayerProps) {
           {/* Play/Pause Button */}
           <button
             onClick={togglePlay}
-            className="p-3 bg-green-500 hover:bg-green-600 rounded-full transition-colors"
+            aria-label={isPlaying ? "Pause" : "Play"}
+            className="p-3 bg-green-500 hover:bg-green-600 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             {isPlaying ? (
-              <Pause className="w-5 h-5 text-white" fill="white" />
+              <Pause className="w-5 h-5 text-white" fill="white" aria-hidden="true" />
             ) : (
-              <Play className="w-5 h-5 text-white" fill="white" />
+              <Play className="w-5 h-5 text-white" fill="white" aria-hidden="true" />
             )}
           </button>
 
           {/* Volume Control */}
           <div className="flex items-center gap-2">
-            <button onClick={toggleMute} className="text-gray-400 hover:text-white">
+            <button 
+              onClick={toggleMute} 
+              aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
+              className="text-gray-400 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white rounded"
+            >
               {isMuted || volume === 0 ? (
-                <VolumeX className="w-5 h-5" />
+                <VolumeX className="w-5 h-5" aria-hidden="true" />
               ) : (
-                <Volume2 className="w-5 h-5" />
+                <Volume2 className="w-5 h-5" aria-hidden="true" />
               )}
             </button>
             <input
@@ -132,7 +138,8 @@ export default function AudioPlayer({ song }: AudioPlayerProps) {
               step="0.1"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-20 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-green-500"
+              aria-label="Volume"
+              className="w-20 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400"
             />
           </div>
         </div>
@@ -140,10 +147,11 @@ export default function AudioPlayer({ song }: AudioPlayerProps) {
         {/* Download Button */}
         <button
           onClick={handleDownload}
-          className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+          aria-label={`Download ${song.title}`}
+          className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           title="Download song"
         >
-          <Download className="w-5 h-5" />
+          <Download className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
     </div>

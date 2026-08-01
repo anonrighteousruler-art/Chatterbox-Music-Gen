@@ -69,7 +69,8 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
                   type="text"
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                  className="bg-black/20 border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:ring-1 focus:ring-green-500 w-full mr-2"
+                  aria-label="Song title"
+                  className="bg-black/20 border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-green-500 w-full mr-2"
                 />
               ) : (
                 <h3 className="text-lg font-semibold text-white">
@@ -84,16 +85,16 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
               
               {editingId === song.id ? (
                 <div className="flex gap-1">
-                  <button onClick={() => saveEditing(song)} className="p-1 text-green-400 hover:bg-green-500/20 rounded">
-                    <Check className="w-4 h-4" />
+                  <button onClick={() => saveEditing(song)} aria-label="Save changes" className="p-1 text-green-400 hover:bg-green-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400">
+                    <Check className="w-4 h-4" aria-hidden="true" />
                   </button>
-                  <button onClick={cancelEditing} className="p-1 text-red-400 hover:bg-red-500/20 rounded">
-                    <X className="w-4 h-4" />
+                  <button onClick={cancelEditing} aria-label="Cancel editing" className="p-1 text-red-400 hover:bg-red-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400">
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               ) : (
-                <button onClick={() => startEditing(song)} className="p-1 text-gray-400 hover:text-green-400 hover:bg-green-500/20 rounded">
-                  <Edit2 className="w-4 h-4" />
+                <button onClick={() => startEditing(song)} aria-label={`Edit ${song.title}`} className="p-1 text-gray-400 hover:text-green-400 hover:bg-green-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400">
+                  <Edit2 className="w-4 h-4" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -107,7 +108,8 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
                   <select
                     value={editForm.genre}
                     onChange={(e) => setEditForm({ ...editForm, genre: e.target.value })}
-                    className="bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-green-500 appearance-none"
+                    aria-label="Genre"
+                    className="bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
                   >
                     {genres.map((g) => (
                       <option key={g} value={g} className="bg-gray-900">{g}</option>
@@ -116,7 +118,8 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
                   <select
                     value={editForm.mood}
                     onChange={(e) => setEditForm({ ...editForm, mood: e.target.value })}
-                    className="bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-green-500 appearance-none"
+                    aria-label="Mood"
+                    className="bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
                   >
                     {moods.map((m) => (
                       <option key={m} value={m} className="bg-gray-900">{m}</option>

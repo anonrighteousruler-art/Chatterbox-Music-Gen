@@ -7,6 +7,7 @@ import VoiceAssistant from '@/components/VoiceAssistant';
 import Mixer from '@/components/Mixer';
 import SunoEditor from '@/components/SunoEditor';
 import SacredGeometryNav from '@/components/SacredGeometryNav';
+import MidiSynth from '@/components/MidiSynth';
 import type { Song } from '@/lib/types';
 import { Music2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -71,6 +72,7 @@ export default function Home() {
             onSongUpdated={handleSongUpdated}
             onSongMastered={handleSongMastered}
             onSongExported={handleSongExported}
+            onNavigate={setActiveSection}
           />
         </header>
 
@@ -154,6 +156,15 @@ export default function Home() {
                     <p className="text-zinc-400 mb-4">Chatterbox is listening in the header above.</p>
                     <p className="text-xs text-zinc-600 font-mono uppercase tracking-widest">Speak your intentions into the void.</p>
                   </div>
+                </div>
+              )}
+              {activeSection === 'instrument' && (
+                <div className="space-y-6 flex flex-col items-center">
+                  <div className="text-center mb-4">
+                    <h2 className="text-3xl font-serif italic mb-2">Sonic Alchemy Channel</h2>
+                    <p className="text-zinc-500 text-sm font-mono tracking-widest uppercase">Sum: 528 | OM</p>
+                  </div>
+                  <MidiSynth />
                 </div>
               )}
             </motion.div>

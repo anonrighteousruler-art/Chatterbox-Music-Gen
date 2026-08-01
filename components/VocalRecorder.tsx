@@ -74,9 +74,11 @@ export default function VocalRecorder({ song, onUpdateSong }: VocalRecorderProps
       <div className="flex items-center gap-4">
         <button
           onClick={isRecording ? stopRecording : startRecording}
-          className={`p-4 rounded-full transition-all ${isRecording ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}
+          aria-label={isRecording ? "Stop Recording" : "Start Recording"}
+          aria-pressed={isRecording}
+          className={`p-4 rounded-full transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${isRecording ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}
         >
-          {isRecording ? <Square className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+          {isRecording ? <Square className="w-6 h-6" aria-hidden="true" /> : <Mic className="w-6 h-6" aria-hidden="true" />}
         </button>
         <div className="text-sm text-gray-400">
           {isRecording ? 'Recording...' : `${song.vocalStacks.length} tracks stacked`}
