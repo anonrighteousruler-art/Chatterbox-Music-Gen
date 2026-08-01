@@ -44,8 +44,8 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
           {[0, 60, 120, 180, 240, 300].map((angle) => (
             <circle
               key={angle}
-              cx={150 + 50 * Math.cos((angle * Math.PI) / 180)}
-              cy={150 + 50 * Math.sin((angle * Math.PI) / 180)}
+              cx={(150 + 50 * Math.cos((angle * Math.PI) / 180)).toFixed(3)}
+              cy={(150 + 50 * Math.sin((angle * Math.PI) / 180)).toFixed(3)}
               r="50"
             />
           ))}
@@ -59,15 +59,18 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
           const startAngle = index * sliceAngle - 90;
           const endAngle = (index + 1) * sliceAngle - 90;
           
-          const x1 = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
-          const y1 = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
-          const x2 = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
-          const y2 = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
+          const x1 = (centerX + radius * Math.cos((startAngle * Math.PI) / 180)).toFixed(3);
+          const y1 = (centerY + radius * Math.sin((startAngle * Math.PI) / 180)).toFixed(3);
+          const x2 = (centerX + radius * Math.cos((endAngle * Math.PI) / 180)).toFixed(3);
+          const y2 = (centerY + radius * Math.sin((endAngle * Math.PI) / 180)).toFixed(3);
           
-          const ix1 = centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180);
-          const iy1 = centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180);
-          const ix2 = centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180);
-          const iy2 = centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180);
+          const ix1 = (centerX + innerRadius * Math.cos((startAngle * Math.PI) / 180)).toFixed(3);
+          const iy1 = (centerY + innerRadius * Math.sin((startAngle * Math.PI) / 180)).toFixed(3);
+          const ix2 = (centerX + innerRadius * Math.cos((endAngle * Math.PI) / 180)).toFixed(3);
+          const iy2 = (centerY + innerRadius * Math.sin((endAngle * Math.PI) / 180)).toFixed(3);
+
+          const textX = (centerX + (radius + 20) * Math.cos(((startAngle + sliceAngle / 2) * Math.PI) / 180)).toFixed(3);
+          const textY = (centerY + (radius + 20) * Math.sin(((startAngle + sliceAngle / 2) * Math.PI) / 180)).toFixed(3);
 
           const isActive = activeSection === item.id;
           const isItemHovered = isHovered === item.id;
@@ -108,8 +111,8 @@ export default function SacredGeometryNav({ activeSection, onSectionChange }: Sa
               
               {/* Text Labels along the arc */}
               <text
-                x={centerX + (radius + 20) * Math.cos(((startAngle + sliceAngle / 2) * Math.PI) / 180)}
-                y={centerY + (radius + 20) * Math.sin(((startAngle + sliceAngle / 2) * Math.PI) / 180)}
+                x={textX}
+                y={textY}
                 textAnchor="middle"
                 className="fill-white/60 text-[10px] font-mono uppercase tracking-widest"
                 style={{ fontSize: '8px' }}
