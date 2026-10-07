@@ -19,6 +19,7 @@ export interface SongSegment {
   type: 'intro' | 'verse' | 'chorus' | 'bridge' | 'outro';
   start: number;
   end: number;
+  lyrics?: string;
 }
 
 export interface Song {

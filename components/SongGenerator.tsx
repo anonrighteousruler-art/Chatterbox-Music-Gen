@@ -12,6 +12,7 @@ export default function SongGenerator({ onSongGenerated }: SongGeneratorProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<'generate' | 'upload'>('generate');
   const [prompt, setPrompt] = useState('');
+  const [promptTouched, setPromptTouched] = useState(false);
   const [genre, setGenre] = useState('Pop');
   const [mood, setMood] = useState('Happy');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -121,73 +122,122 @@ export default function SongGenerator({ onSongGenerated }: SongGeneratorProps) {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="song-prompt" className="block text-xs font-medium text-gray-500 uppercase mb-2">
-                Song Description
-              </label>
-              <textarea
-                id="song-prompt"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="A song about exploring the galaxy..."
-                className="w-full h-24 bg-black/20 border border-white/10 rounded-xl p-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
-              />
-            </div>
+            {(() => {
+              const isPromptEmpty = prompt.trim() === '';
+              const isPromptTooShort = !isPromptEmpty && prompt.trim().length < 10;
+              const isPromptTooLong = prompt.trim().length > 500;
+              const promptError = promptTouched 
+                ? (isPromptEmpty 
+                    ? 'Song Description is required to manifest sound.' 
+                    : (isPromptTooShort 
+                        ? 'Please describe your vision in more detail (min 10 characters).' 
+                        : (isPromptTooLong 
+                            ? 'Keep your description within 500 characters.' 
+                            : null)))
+                : null;
+              const isPromptValid = !isPromptEmpty && !isPromptTooShort && !isPromptTooLong;
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="song-genre" className="block text-xs font-medium text-gray-500 uppercase mb-2">
-                  Genre
-                </label>
-                <select
-                  id="song-genre"
-                  value={genre}
-                  onChange={(e) => setGenre(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                >
-                  {genres.map((g) => (
-                    <option key={g} value={g} className="bg-gray-900">
-                      {g}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="song-mood" className="block text-xs font-medium text-gray-500 uppercase mb-2">
-                  Mood
-                </label>
-                <select
-                  id="song-mood"
-                  value={mood}
-                  onChange={(e) => setMood(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                >
-                  {moods.map((m) => (
-                    <option key={m} value={m} className="bg-gray-900">
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+              return (
+                <>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label htmlFor="song-prompt" className="block text-xs font-medium text-gray-500 uppercase">
+                        Song Description
+                      </label>
+                      <span className={`text-[10px] font-mono ${isPromptTooLong ? 'text-red-400 font-bold' : 'text-zinc-500'}`}>
+                        {prompt.length}/500
+                      </span>
+                    </div>
+                    <textarea
+                      id="song-prompt"
+                      value={prompt}
+                      onBlur={() => setPromptTouched(true)}
+                      onChange={(e) => {
+                        setPrompt(e.target.value);
+                        if (!promptTouched) setPromptTouched(true);
+                      }}
+                      placeholder="A song about exploring the galaxy..."
+                      className={`w-full h-24 bg-black/20 border rounded-xl p-4 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 transition-all resize-none ${
+                        promptError 
+                          ? 'border-red-500/50 focus:ring-red-500 bg-red-950/10' 
+                          : (promptTouched && isPromptValid) 
+                            ? 'border-green-500/50 focus:ring-green-500 bg-green-950/10' 
+                            : 'border-white/10 focus:ring-green-500'
+                      }`}
+                    />
+                    {promptError && (
+                      <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1" role="alert">
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full inline-block" />
+                        {promptError}
+                      </p>
+                    )}
+                    {promptTouched && isPromptValid && (
+                      <p className="text-xs text-green-400 mt-1.5 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full inline-block" />
+                        ✓ vision is beautifully descriptive.
+                      </p>
+                    )}
+                  </div>
 
-            <button
-              onClick={handleGenerate}
-              disabled={!prompt || isGenerating}
-              className="w-full py-4 bg-green-600/80 hover:bg-green-500 text-white rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                  Generating...
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="song-genre" className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                        Genre
+                      </label>
+                      <select
+                        id="song-genre"
+                        value={genre}
+                        onChange={(e) => setGenre(e.target.value)}
+                        className="w-full bg-black/20 border border-green-500/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none transition-all"
+                      >
+                        {genres.map((g) => (
+                          <option key={g} value={g} className="bg-gray-900">
+                            {g}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-[10px] text-green-400/80 mt-1">✓ Valid genre chosen</p>
+                    </div>
+                    <div>
+                      <label htmlFor="song-mood" className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                        Mood
+                      </label>
+                      <select
+                        id="song-mood"
+                        value={mood}
+                        onChange={(e) => setMood(e.target.value)}
+                        className="w-full bg-black/20 border border-green-500/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none transition-all"
+                      >
+                        {moods.map((m) => (
+                          <option key={m} value={m} className="bg-gray-900">
+                            {m}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-[10px] text-green-400/80 mt-1">✓ Valid mood chosen</p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleGenerate}
+                    disabled={!isPromptValid || isGenerating}
+                    className="w-full py-4 bg-green-600/80 hover:bg-green-500 text-white rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Music className="w-5 h-5" aria-hidden="true" />
+                        Generate Song
+                      </>
+                    )}
+                  </button>
                 </>
-              ) : (
-                <>
-                  <Music className="w-5 h-5" aria-hidden="true" />
-                  Generate Song
-                </>
-              )}
-            </button>
+              );
+            })()}
           </div>
         ) : (
           <div className="space-y-6 py-4">

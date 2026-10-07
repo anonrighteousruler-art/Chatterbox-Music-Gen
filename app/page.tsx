@@ -6,16 +6,38 @@ import SongLibrary from '@/components/SongLibrary';
 import VoiceAssistant from '@/components/VoiceAssistant';
 import Mixer from '@/components/Mixer';
 import SunoEditor from '@/components/SunoEditor';
-import SacredGeometryNav from '@/components/SacredGeometryNav';
+import SidebarNav from '@/components/SidebarNav';
+import FeedbackModal from '@/components/FeedbackModal';
 import MidiSynth from '@/components/MidiSynth';
 import type { Song } from '@/lib/types';
-import { Music2, Sparkles } from 'lucide-react';
+import { Music2, Sparkles, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Home() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [activeSection, setActiveSection] = useState('generator');
   const [selectedSongId, setSelectedSongId] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    const body = document.body;
+    if (theme === 'light') {
+      body.classList.remove('dark-theme');
+      body.classList.add('light-theme');
+    } else {
+      body.classList.remove('light-theme');
+      body.classList.add('dark-theme');
+    }
+  }, [theme]);
 
   const selectedSong = songs.find(s => s.id === selectedSongId) || songs[0];
 
@@ -49,44 +71,49 @@ export default function Home() {
   };
 
   return (
-    <main className="relative min-h-screen bg-[#0a0502] text-white overflow-hidden font-sans">
+    <main className={`relative min-h-screen transition-colors duration-500 overflow-hidden font-sans ${theme === 'dark' ? 'bg-[#0a0502] text-white' : 'bg-[#faf9f6] text-stone-900'}`}>
       {/* Immersive Background (Recipe 7) */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#3a1510] rounded-full blur-[120px] opacity-30 animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#ff4e00] rounded-full blur-[100px] opacity-20" />
-        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#00D4FF] rounded-full blur-[80px] opacity-10" />
+      <div className="fixed inset-0 pointer-events-none overflow-hidden transition-all duration-700">
+        <div className={`absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[120px] transition-all duration-700 ${theme === 'dark' ? 'bg-[#3a1510] opacity-30 animate-pulse' : 'bg-purple-100/30 opacity-40'}`} />
+        <div className={`absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full blur-[100px] transition-all duration-700 ${theme === 'dark' ? 'bg-[#ff4e00] opacity-20' : 'bg-orange-100/20 opacity-40'}`} />
+        <div className={`absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full blur-[80px] transition-all duration-700 ${theme === 'dark' ? 'bg-[#00D4FF] opacity-10' : 'bg-emerald-100/10 opacity-30'}`} />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 flex flex-col items-center">
-        {/* Header */}
-        <header className="w-full flex justify-between items-center mb-12">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/5 rounded-full border border-white/10">
-              <Sparkles className="w-5 h-5 text-orange-500" />
-            </div>
-            <h1 className="text-xl font-serif italic tracking-tight">AllIsOne</h1>
-          </div>
-          <VoiceAssistant 
-            songs={songs}
-            onSongGenerated={handleSongGenerated} 
-            onSongUpdated={handleSongUpdated}
-            onSongMastered={handleSongMastered}
-            onSongExported={handleSongExported}
-            onNavigate={setActiveSection}
-          />
-        </header>
+      <div className="relative z-10 flex h-screen w-full">
+        {/* Sidebar Navigation */}
+        <SidebarNav 
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
+        />
 
-        {/* Central Navigation Hub */}
-        <div className="mb-16">
-          <SacredGeometryNav 
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection} 
-          />
-        </div>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <div className="max-w-5xl mx-auto w-full px-8 py-8 flex flex-col flex-1">
+            {/* Header */}
+            <header className="w-full flex justify-end items-center mb-12 pb-6 border-b border-white/5">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                  className="p-2.5 bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-500 flex items-center justify-center text-orange-500 shadow-sm"
+                  aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                >
+                  {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-yellow-400 animate-spin" style={{ animationDuration: '8s' }} />}
+                </button>
+                <VoiceAssistant 
+                  songs={songs}
+                  onSongGenerated={handleSongGenerated} 
+                  onSongUpdated={handleSongUpdated}
+                  onSongMastered={handleSongMastered}
+                  onSongExported={handleSongExported}
+                  onNavigate={setActiveSection}
+                />
+              </div>
+            </header>
 
-        {/* Content Area */}
-        <div className="w-full max-w-4xl">
-          <AnimatePresence mode="wait">
+            {/* Content Area */}
+            <div className="w-full">
+              <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
               initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -170,7 +197,10 @@ export default function Home() {
             </motion.div>
           </AnimatePresence>
         </div>
+        </div>
       </div>
+      </div>
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
     </main>
   );
 }

@@ -64,15 +64,35 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
           {/* Song Info */}
           <div className="mb-4">
             <div className="flex justify-between items-start mb-1">
-              {editingId === song.id ? (
-                <input
-                  type="text"
-                  value={editForm.title}
-                  onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                  aria-label="Song title"
-                  className="bg-black/20 border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:ring-2 focus:ring-green-500 w-full mr-2"
-                />
-              ) : (
+              {editingId === song.id ? (() => {
+                const isTitleEmpty = editForm.title.trim() === '';
+                const isTitleTooLong = editForm.title.length > 50;
+                const titleError = isTitleEmpty 
+                  ? 'Title cannot be empty.' 
+                  : (isTitleTooLong ? 'Title cannot exceed 50 characters.' : null);
+
+                return (
+                  <div className="flex-1 mr-2 space-y-1">
+                    <input
+                      type="text"
+                      value={editForm.title}
+                      onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                      aria-label="Song title"
+                      className={`bg-black/20 border rounded px-2 py-1 text-white focus:outline-none focus:ring-2 w-full transition-all ${
+                        titleError 
+                          ? 'border-red-500/50 focus:ring-red-500' 
+                          : 'border-green-500/50 focus:ring-green-500'
+                      }`}
+                    />
+                    {titleError && (
+                      <p className="text-xs text-red-400 font-medium" role="alert">{titleError}</p>
+                    )}
+                    {!titleError && (
+                      <p className="text-xs text-green-400 font-medium">✓ Title is valid</p>
+                    )}
+                  </div>
+                );
+              })() : (
                 <h3 className="text-lg font-semibold text-white">
                   {song.title}
                   {song.isMastered && (
@@ -83,16 +103,24 @@ export default function SongLibrary({ songs, onUpdateSong }: SongLibraryProps) {
                 </h3>
               )}
               
-              {editingId === song.id ? (
-                <div className="flex gap-1">
-                  <button onClick={() => saveEditing(song)} aria-label="Save changes" className="p-1 text-green-400 hover:bg-green-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400">
-                    <Check className="w-4 h-4" aria-hidden="true" />
-                  </button>
-                  <button onClick={cancelEditing} aria-label="Cancel editing" className="p-1 text-red-400 hover:bg-red-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400">
-                    <X className="w-4 h-4" aria-hidden="true" />
-                  </button>
-                </div>
-              ) : (
+              {editingId === song.id ? (() => {
+                const isTitleInvalid = editForm.title.trim() === '' || editForm.title.length > 50;
+                return (
+                  <div className="flex gap-1">
+                    <button 
+                      onClick={() => !isTitleInvalid && saveEditing(song)} 
+                      disabled={isTitleInvalid}
+                      aria-label="Save changes" 
+                      className="p-1 text-green-400 hover:bg-green-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <Check className="w-4 h-4" aria-hidden="true" />
+                    </button>
+                    <button onClick={cancelEditing} aria-label="Cancel editing" className="p-1 text-red-400 hover:bg-red-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400">
+                      <X className="w-4 h-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                );
+              })() : (
                 <button onClick={() => startEditing(song)} aria-label={`Edit ${song.title}`} className="p-1 text-gray-400 hover:text-green-400 hover:bg-green-500/20 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-400">
                   <Edit2 className="w-4 h-4" aria-hidden="true" />
                 </button>

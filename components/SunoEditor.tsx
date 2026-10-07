@@ -102,28 +102,60 @@ export default function SunoEditor({ song, onUpdateSong }: SunoEditorProps) {
 
         <div className="space-y-4">
           <h3 className="text-sm font-semibold opacity-60 uppercase tracking-widest">Segment Details</h3>
-          {selectedSegment ? (
-            <div className="bg-black/20 rounded-xl p-4 border border-white/5 space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-mono text-pink-400" aria-label={`Segment ID: ${selectedSegment}`}>ID: {selectedSegment}</span>
-                <button 
-                  onClick={() => removeSegment(selectedSegment)}
-                  aria-label="Remove Segment"
-                  className="text-[10px] text-red-400 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400 rounded px-1"
-                >
-                  Remove
-                </button>
+          {selectedSegment ? (() => {
+            const currentSegment = song.segments.find(s => s.id === selectedSegment);
+            const lyricsValue = currentSegment?.lyrics || '';
+            const isLyricsEmpty = lyricsValue.trim() === '';
+            const isLyricsTooLong = lyricsValue.length > 300;
+            const lyricsError = isLyricsTooLong ? 'Lyrics cannot exceed 300 characters.' : null;
+            
+            return (
+              <div className="bg-black/20 rounded-xl p-4 border border-white/5 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-mono text-pink-400" aria-label={`Segment ID: ${selectedSegment}`}>ID: {selectedSegment}</span>
+                  <button 
+                    onClick={() => removeSegment(selectedSegment)}
+                    aria-label="Remove Segment"
+                    className="text-[10px] text-red-400 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400 rounded px-1"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <label htmlFor="segment-lyrics" className="text-[10px] uppercase opacity-40">Lyrics / Prompt</label>
+                    <span className={`text-[9px] font-mono ${isLyricsTooLong ? 'text-red-400 font-bold' : 'text-zinc-500'}`}>
+                      {lyricsValue.length}/300
+                    </span>
+                  </div>
+                  <textarea 
+                    id="segment-lyrics"
+                    value={lyricsValue}
+                    onChange={(e) => {
+                      onUpdateSong({
+                        ...song,
+                        segments: song.segments.map(s => s.id === selectedSegment ? { ...s, lyrics: e.target.value } : s)
+                      });
+                    }}
+                    className={`w-full bg-black/40 border rounded-lg p-2 text-xs h-20 focus:outline-none focus:ring-2 transition-colors ${
+                      isLyricsTooLong 
+                        ? 'border-red-500/50 focus:ring-red-500' 
+                        : isLyricsEmpty 
+                          ? 'border-white/10 focus:ring-pink-500' 
+                          : 'border-green-500/50 focus:ring-green-500'
+                    }`}
+                    placeholder="Enter lyrics for this section..."
+                  />
+                  {lyricsError && (
+                    <p className="text-[10px] text-red-400 mt-1" role="alert">{lyricsError}</p>
+                  )}
+                  {!isLyricsEmpty && !isLyricsTooLong && (
+                    <p className="text-[10px] text-green-400 mt-1">✓ Segment lyrics are valid and saved in real-time.</p>
+                  )}
+                </div>
               </div>
-              <div className="space-y-1">
-                <label htmlFor="segment-lyrics" className="text-[10px] uppercase opacity-40">Lyrics / Prompt</label>
-                <textarea 
-                  id="segment-lyrics"
-                  className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-xs h-20 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  placeholder="Enter lyrics for this section..."
-                />
-              </div>
-            </div>
-          ) : (
+            );
+          })() : (
             <div className="h-full flex items-center justify-center border border-dashed border-white/10 rounded-xl p-8 text-zinc-600 text-xs text-center">
               Select a segment on the timeline to edit its properties
             </div>

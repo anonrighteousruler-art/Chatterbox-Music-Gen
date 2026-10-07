@@ -8,6 +8,16 @@ body {
     radial-gradient(circle at 50% 80%, rgba(225, 29, 72, 0.3), transparent 50%);
   background-attachment: fixed;
   color: white;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.light-theme {
+  background-color: #faf9f6;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.06), transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(225, 29, 72, 0.06), transparent 50%);
+  color: #1c1917;
 }
 
 .glass-panel {
@@ -16,6 +26,98 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease;
+}
+
+body.light-theme .glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  color: #1c1917;
+}
+
+/* Color Remapping for Light Theme */
+body.light-theme .text-white {
+  color: #1c1917 !important;
+}
+body.light-theme .text-zinc-500 {
+  color: #57534e !important;
+}
+body.light-theme .text-zinc-400 {
+  color: #44403c !important;
+}
+body.light-theme .text-gray-400 {
+  color: #44403c !important;
+}
+body.light-theme .text-gray-500 {
+  color: #57534e !important;
+}
+body.light-theme .text-zinc-600 {
+  color: #78716c !important;
+}
+body.light-theme .bg-black\/20 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+body.light-theme .bg-black\/40 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+body.light-theme .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme .fill-white\/60 {
+  fill: rgba(0, 0, 0, 0.6) !important;
+}
+body.light-theme .fill-white\/40 {
+  fill: rgba(0, 0, 0, 0.4) !important;
+}
+body.light-theme .fill-white {
+  fill: #1c1917 !important;
+}
+body.light-theme .stroke-white\/10 {
+  stroke: rgba(0, 0, 0, 0.08) !important;
+}
+body.light-theme .stroke-white\/20 {
+  stroke: rgba(0, 0, 0, 0.12) !important;
+}
+body.light-theme .text-green-300 {
+  color: #15803d !important;
+}
+body.light-theme .text-green-400 {
+  color: #166534 !important;
+}
+body.light-theme .bg-green-500\/20 {
+  background-color: rgba(34, 197, 94, 0.12) !important;
+}
+body.light-theme .bg-blue-500\/20 {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+}
+body.light-theme .text-blue-300 {
+  color: #1d4ed8 !important;
+}
+body.light-theme .text-pink-400 {
+  color: #be185d !important;
+}
+body.light-theme .bg-pink-500\/20 {
+  background-color: rgba(236, 72, 153, 0.12) !important;
+}
+body.light-theme .bg-orange-500\/20 {
+  background-color: rgba(249, 115, 22, 0.12) !important;
+}
+body.light-theme .text-orange-400 {
+  color: #c2410c !important;
+}
+body.light-theme .text-orange-300 {
+  color: #c2410c !important;
+}
+body.light-theme .bg-zinc-900 {
+  background-color: #f5f5f4 !important;
+}
+body.light-theme option {
+  background-color: #faf9f6 !important;
+  color: #1c1917 !important;
 }
 
 .orb-pulse {
